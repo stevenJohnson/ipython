@@ -317,14 +317,35 @@ class IPEngineApp(BaseParallelApplication):
         except KeyboardInterrupt:
             self.log.critical("Engine Interrupted, shutting down...\n")
 
+def forking():
+    import socket
+    from time import sleep
+    sock = socket.socket()
+    address = 'localhost'
+    port = 51337
+    sock.connect((address, port))
+    print "sending", sys.argv
+    sock.send(','.join(sys.argv))
+    observe = int(sock.recv(1024))
+    print "the new pid is:", observe
 
-def launch_new_instance():
-    """Create and run the IPython engine"""
-    app = IPEngineApp.instance()
-    app.initialize()
-    app.start()
+    #need to continuously poll for new pid
+    while check_pid_existence(observe):
+        sleep(1)       
 
+def check_pid_existence(pid):
+    try:
+        os.kill(pid, 0) # Kill 0 raises OSError if pid doesn't exist
+    except OSError:
+        return False
+    else:
+        return True
 
-if __name__ == '__main__':
-    launch_new_instance()
+def launch_new_instance(argv=None):
+     """Create and run the IPython engine"""
+     app = IPEngineApp.instance()
+     app.initialize(argv)
+     app.start()
 
+if __name__ == '__main__':      
+     forking()      

@@ -80,6 +80,7 @@ class EngineFactory(RegistrationFactory):
 
     def init_connector(self):
         """construct connection function, which handles tunnels."""
+
         self.using_ssh = bool(self.sshkey or self.sshserver)
 
         if self.sshkey and not self.sshserver:

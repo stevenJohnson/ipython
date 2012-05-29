@@ -18,7 +18,6 @@ Authors:
 #-----------------------------------------------------------------------------
 # Imports
 #-----------------------------------------------------------------------------
-
 import copy
 import logging
 import os
@@ -363,7 +362,7 @@ class LocalEngineLauncher(LocalProcessLauncher, EngineMixin):
 
 class LocalEngineSetLauncher(LocalEngineLauncher):
     """Launch a set of engines as regular external processes."""
-
+    
     delay = CFloat(0.1, config=True,
         help="""delay (in seconds) between starting each engine after the first.
         This can help force the engines to get their ids in order, or limit
@@ -705,7 +704,7 @@ class SSHEngineLauncher(SSHClusterLauncher, EngineMixin):
     # than *some* having `program_args` and others `controller_args`
     
     def _engine_cmd_default(self):
-        return ['ipengine']
+        return ['ipforkengine']
     
     @property
     def program(self):

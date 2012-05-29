@@ -140,7 +140,6 @@ aliases.update(session_aliases)
 
 
 class IPControllerApp(BaseParallelApplication):
-
     name = u'ipcontroller'
     description = _description
     examples = _examples

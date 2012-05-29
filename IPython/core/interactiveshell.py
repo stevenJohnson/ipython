@@ -14,6 +14,7 @@
 # Imports
 #-----------------------------------------------------------------------------
 
+
 from __future__ import with_statement
 from __future__ import absolute_import
 
@@ -925,7 +926,7 @@ class InteractiveShell(SingletonConfigurable, Magic):
     #-------------------------------------------------------------------------
     default_user_namespaces = True
 
-    def init_create_namespaces(self, user_module=None, user_ns=None):
+    def init_create_namespaces(self, user_module=None, user_ns=None):   
         # Create the namespace where the user will operate.  user_ns is
         # normally the only one used, and it is passed to the exec calls as
         # the locals argument.  But we do carry a user_global_ns namespace
@@ -962,6 +963,7 @@ class InteractiveShell(SingletonConfigurable, Magic):
         # These routines return a properly built module and dict as needed by
         # the rest of the code, and can also be used by extension writers to
         # generate properly initialized namespaces.
+
         if (user_ns is not None) or (user_module is not None):
             self.default_user_namespaces = False
         self.user_module, self.user_ns = self.prepare_user_module(user_module, user_ns)
