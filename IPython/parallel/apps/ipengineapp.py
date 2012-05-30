@@ -318,11 +318,14 @@ class IPEngineApp(BaseParallelApplication):
             self.log.critical("Engine Interrupted, shutting down...\n")
 
 def forking():
+    with open("output.txt", "a") as f:
+        f.write("\nin forking\n")
     import socket
     from time import sleep
     sock = socket.socket()
     address = 'localhost'
-    port = 51337
+    with open("/tmp/ipsocket") as f:
+        port = int(f.read())
     sock.connect((address, port))
     print "sending", sys.argv
     sock.send(','.join(sys.argv))
@@ -342,10 +345,18 @@ def check_pid_existence(pid):
         return True
 
 def launch_new_instance(argv=None):
-     """Create and run the IPython engine"""
-     app = IPEngineApp.instance()
-     app.initialize(argv)
-     app.start()
+    """Create and run the IPython engine"""
+    print "in launch new instance"
+    app = IPEngineApp.instance()
+    app.initialize(argv)
+    app.start()
 
-if __name__ == '__main__':      
-     forking()      
+def launch_new_instance2(argv=None):
+    """Create and run the IPython engine by forking!!"""
+    forking()
+
+if __name__ == "__main__":
+    with open("output.txt", "a") as f:
+        f.write("main entry")
+    forking()
+  
