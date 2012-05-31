@@ -1,6 +1,6 @@
 from IPython.parallel.apps.ipengineapp import IPEngineApp, launch_new_instance
-import sage.all
-
+#import sage.all
+import numpy
 
 def make_server():
     # listen on socket
@@ -18,12 +18,12 @@ def make_server():
         while True:
             client, address = s.accept()
             data = client.recv(size).split(',')
-            print "before if "
             if data:
                 print numpy
                 new = IPEngineApp.instance()
                 new.initialize(data)
-                new.engine.user_ns = {"sage": sage.all}
+                #new.engine.user_ns = {"sage": sage.all}
+                new.engine.user_ns = {"numpy": numpy}
                 p = Process(target=new.start)
                 p.start()
                 print "Process %d started" % p.pid
@@ -32,9 +32,6 @@ def make_server():
     except KeyboardInterrupt:
         s.close()
         print "\nclosed socket"
-
-def fork_engine(argv, master):
-    pass
 
 def socket_on_open_port():
         import socket
