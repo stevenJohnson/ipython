@@ -13,6 +13,7 @@ from IPython.core.application import BaseIPythonApplication
 
 null = open(os.devnull, "w")
 trusted_profile = ProfileDir.create_profile_dir_by_name(BaseIPythonApplication.ipython_dir.default_value, "sagecell").location
+print "Starting controller..."
 subprocess.Popen(["ipcontroller", "--profile-dir", trusted_profile], stderr=null, stdout=null)
 context = zmq.Context()
 req = context.socket(zmq.REQ)
@@ -25,9 +26,13 @@ while not os.path.exists("%s/security/ipcontroller-engine.json" % (trusted_profi
     pass
 if len(sys.argv) > 1:
     subprocess.Popen(["scp", "-qr", trusted_profile, "%s@localhost:%s" % (sys.argv[1], untrusted_profile)]).wait()
-ssh.exec_command("python '%s/ipforkengine.py' %d '%s' 2>'%s'" %
-        (os.getcwd(), port, untrusted_profile if len(sys.argv) > 1 else trusted_profile, os.devnull))
-print "Press Enter to start a new engine."
+ssh.exec_command("sage '%s/ipforkengine.py' %d '%s' 2>'%s'" %
+        (os.getcwd(), port, untrusted_profile if len(sys.argv) > 1 else trusted_profile, "/tmp/log.txt" if "--debug" in sys.argv else os.devnull))
+sys.stdout.write("Loading Sage...")
+sys.stdout.flush()
+req.send("")
+req.recv()
+print "done!\n\nPress Enter to start a new engine."
 try:
     while True:
         raw_input()
