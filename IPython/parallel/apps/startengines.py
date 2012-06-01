@@ -13,8 +13,6 @@ from IPython.core.application import BaseIPythonApplication
 
 null = open(os.devnull, "w")
 trusted_profile = ProfileDir.create_profile_dir_by_name(BaseIPythonApplication.ipython_dir.default_value, "sagecell").location
-untrusted_profile = tempfile.mkdtemp()
-os.rmdir(untrusted_profile)
 subprocess.Popen(["ipcontroller", "--profile-dir", trusted_profile], stderr=null, stdout=null)
 context = zmq.Context()
 req = context.socket(zmq.REQ)
@@ -22,6 +20,7 @@ port = req.bind_to_random_port("tcp://127.0.0.1")
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 ssh.connect("localhost", username=sys.argv[1] if len(sys.argv) > 1 else None)
+untrusted_profile = ssh.exec_command("python -c 'import tempfile, os; x = tempfile.mkdtemp(); print x; os.rmdir(x)'")[1].read().strip()
 while not os.path.exists("%s/security/ipcontroller-engine.json" % (trusted_profile,)):
     pass
 if len(sys.argv) > 1:
